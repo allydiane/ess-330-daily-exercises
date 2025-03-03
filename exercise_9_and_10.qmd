@@ -1,0 +1,53 @@
+---
+title: "Exercise 9 and 10"
+format: html
+editor: visual
+---
+#1. 
+```{r}
+?airquality
+```
+
+#2.
+```{r}
+install.packages("visdat")
+library(visdat)
+vis_dat(airquality)
+```
+#2. Cleaned data
+```{r}
+colSums(is.na(airquality))
+```
+
+```{r}
+airquality_cleaned <- na.omit(airquality)
+```
+
+#3. 
+```{r}
+model <- lm(Ozone ~ Solar.R, data = airquality_cleaned)
+summary(model)
+```
+#I chose Solar.R as my dataset because there is a known correlation between ozone condition and solar radiation levels. 
+#4. I don't believe this model is very accurate or portrays the correlation well. The r-squared value is only .1133, or 11.33% which is very low. 
+#5. The r-squared values portray correlations between predictor and response variables, and the higher the value from 0 to 1, the higher the correlation. Since the r-squared value was so low, there is little explanation for the variation in the ozone data (but it could probably be ecplained by relating to the other columns in conjunction with Solar.R)
+#6/7. 
+```{r}
+install.packages("broom")
+library(broom)
+```
+```{r}
+a <- augment(model)
+
+library(ggplot2)
+ggplot(a, aes(x = Ozone, y = .fitted)) +
+  geom_point(color = "blue") +  
+  geom_abline(intercept = 0, slope = 1, color = "red") +  
+  labs(
+    title = "Actual vs Predicted Ozone",
+    subtitle = paste("Correlation of Data:", round(cor(a$Ozone, a$.fitted), 2)),
+    x = "Actual Ozone",
+    y = "Predicted Ozone"
+  ) +
+  theme_minimal()
+```
